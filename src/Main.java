@@ -1,11 +1,17 @@
+import jdk.nashorn.internal.runtime.options.Options;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
+import java.net.URL;
 
 /**
  * <p> This is MainView Class For Personal Information Frame </p>
@@ -15,8 +21,12 @@ import java.io.IOException;
  */
 public class Main {
 
+    private static String[] columnNames={"ID","Name","Family","Address"};
+    private static Object[][] data={{123,"ali","abasi","tehran"}};
     private Dimension dimension;
     private JFrame frame_main;
+    private JTable jTable_login;
+    private JScrollPane jsp_login;
 
     //-------------------------------------------------------------------- Define MenuBar
     private JMenuBar menu_bar;
@@ -25,6 +35,7 @@ public class Main {
     private JMenu jMenu_edit;
 
     private JMenuItem jItem_open;
+    private JMenuItem jItem_saveAs;
     private JMenuItem jItem_save;
     private JMenuItem jItem_update;
     private JMenuItem jItem_delete;
@@ -42,19 +53,23 @@ public class Main {
     private JPanel jPanel1;
     private JPanel jPanel2;
     private JPanel jPanel3;
+    private JPanel jPanel4;
 
     //-------------------------------------------------------------------- Define All Label
+    private JLabel lbl_id;
     private JLabel lbl_name;
     private JLabel lbl_family;
     private JLabel lbl_address;
 
     //-------------------------------------------------------------------- Define All TextBox
+    private JTextField txt_id;
     private JTextField txt_name;
     private JTextField txt_family;
     private JTextField txt_address;
 
     //-------------------------------------------------------------------- Define All Button
     private JButton btn_save;
+    private JButton btn_saveAs;
     private JButton btn_update;
     private JButton btn_delete;
     private JButton btn_clear;
@@ -82,18 +97,18 @@ public class Main {
         frame_main.setLayout(null);
         Image login= ImageIO.read(new File("src/images/login.png"));
         frame_main.setIconImage(login);
-
         //frame_main.pack();
 
         //----------------------------------------------------------------------- Implementation JMenuBar
         menu_bar=new JMenuBar();
-        menu_bar.setBounds(0,0,ws,20);
+        menu_bar.setBounds(0,0,600,20);
         menu_bar.setBackground(Color.ORANGE);
 
         jMenu_file=new JMenu("File");
         jMenu_edit=new JMenu("Edit");
 
         jItem_open=new JMenuItem("Open");
+        jItem_saveAs=new JMenuItem("Save As");
         jItem_save=new JMenuItem("Save");
         jItem_update=new JMenuItem("Update");
         jItem_delete=new JMenuItem("Delete");
@@ -107,7 +122,6 @@ public class Main {
         jItem_json=new JMenuItem("JSon");
 
         jItem_exit=new JMenuItem("Exit");
-
         jItem_exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -115,53 +129,120 @@ public class Main {
             }
         });
 
+
+        URL url_open=this.getClass().getResource("/images/open.JPG");
+        ImageIcon icon_open=new ImageIcon(url_open);
+        jItem_open.setIcon(icon_open);
+
+        URL url_save=this.getClass().getResource("/images/save.JPG");
+        ImageIcon icon_save=new ImageIcon(url_save);
+        jItem_save.setIcon(icon_save);
+
+        URL url_clear=this.getClass().getResource("/images/clear.JPG");
+        ImageIcon icon_clear=new ImageIcon(url_clear);
+        jItem_clear.setIcon(icon_clear);
+
+        URL url_word=this.getClass().getResource("/images/word.JPG");
+        ImageIcon icon_word=new ImageIcon(url_word);
+        jItem_word.setIcon(icon_word);
+
+        URL url_excel=this.getClass().getResource("/images/excel.JPG");
+        ImageIcon icon_excel=new ImageIcon(url_excel);
+        jItem_excel.setIcon(icon_excel);
+
         /**
          * <p>Set The All JPanel For Frame</p>
          */
         //----------------------------------------------------------------------- Implementation JPanel 1
         jPanel1=new JPanel();
         jPanel1.setLayout(null);
-        jPanel1.setBounds(0,0,ws,hs/2);
+        jPanel1.setBounds(0,0,600,hs/2);
 
         //----------------------------------------------------------------------- Implementation JPanel 2
         jPanel2=new JPanel();
         jPanel2.setLayout(null);
-        jPanel2.setBounds(0,20,ws,(hs/2)/2);
+        jPanel2.setBounds(0,20,600,(hs/2)/2);
         jPanel2.setBackground(Color.PINK);
 
         //------------------------------------------------------------------------ Implementation JPanel 3
         jPanel3=new JPanel();
         jPanel3.setLayout(null);
-        jPanel3.setBounds(0,20+(hs/2)/2,ws,(hs/2)/2);
+        jPanel3.setBounds(0,20+(hs/2)/2,600,(hs/2)/2);
         jPanel3.setBackground(Color.RED);
+
+        //------------------------------------------------------------------------ Implementation JPanel 3
+        jPanel4=new JPanel(null);
+        jPanel4.setBounds(0,hs/2,600,hs/2);
+        jPanel4.setBackground(Color.BLUE);
+
+        //------------------------------------------------------------------------ Implementation jTable_login
+        jTable_login=new JTable(data,columnNames);
+        jsp_login=new JScrollPane(jTable_login);
+        jsp_login.setBounds(0,0,600,hs/2);
+        jTable_login.setFillsViewportHeight(true);
+        TableColumn tableColumn=null;
+        for(int i=0;i<columnNames.length;i++)
+        {
+            tableColumn=jTable_login.getColumnModel().getColumn(i);
+            if(i==3){
+                tableColumn.setPreferredWidth(200);
+            }
+            else{
+                tableColumn.setPreferredWidth(50);
+            }
+        }
+        //tableColumn.setResizable(false);
+        jTable_login.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jTable_login.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                long id= Long.parseLong(jTable_login.getValueAt(jTable_login.getSelectedRow(),0).toString());
+                String name= jTable_login.getValueAt(jTable_login.getSelectedRow(),1).toString();
+                String family=jTable_login.getValueAt(jTable_login.getSelectedRow(),2).toString();
+                String address=jTable_login.getValueAt(jTable_login.getSelectedRow(),3).toString();
+
+                txt_id.setText(String.valueOf(id));
+                txt_name.setText(name);
+                txt_family.setText(family);
+                txt_address.setText(address);
+            }
+        });
 
         /**
          * <p>Set the all Label & TextBox this form to JPanel_1</p>
          */
 
+        //--------------------------------------------------------------- Implementation Label ID
+        lbl_id=new JLabel("ID :",JLabel.CENTER);
+        lbl_id.setBounds(10,10,70,30);
+
+        //--------------------------------------------------------------- Implementation TextBox ID
+        txt_id=new JTextField();
+        txt_id.setBounds(90,10,200,30);
+
         //--------------------------------------------------------------- Implementation Label Name
         lbl_name=new JLabel("Name :",JLabel.CENTER);
-        lbl_name.setBounds(10,10,70,30);
+        lbl_name.setBounds(10,50,70,30);
 
         //--------------------------------------------------------------- Implementation TextBox Name
         txt_name=new JTextField();
-        txt_name.setBounds(90,10,200,30);
+        txt_name.setBounds(90,50,200,30);
 
         //--------------------------------------------------------------- Implementation Label Family
         lbl_family=new JLabel("Family :",JLabel.CENTER);
-        lbl_family.setBounds(10,50,70,30);
+        lbl_family.setBounds(10,90,70,30);
 
         //--------------------------------------------------------------- Implementation TextBox Family
         txt_family=new JTextField();
-        txt_family.setBounds(90,50,200,30);
+        txt_family.setBounds(90,90,200,30);
 
         //--------------------------------------------------------------- Implementation Label Address
         lbl_address=new JLabel("Address :",JLabel.CENTER);
-        lbl_address.setBounds(10,90,70,30);
+        lbl_address.setBounds(10,130,70,30);
 
         //--------------------------------------------------------------- Implementation TextBox Address
         txt_address=new JTextField();
-        txt_address.setBounds(90,90,200,30);
+        txt_address.setBounds(90,130,200,30);
 
 
         /**
@@ -211,13 +292,26 @@ public class Main {
         btn_pdf=new JButton("Pdf");
         btn_pdf.setBounds(450,90,100,30);
 
+        //--------------------------------------------------------------- Implementation Button Save As
+        btn_saveAs=new JButton("Save As");
+        btn_saveAs.setBounds(230,130,100,30);
+        btn_saveAs.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] options={"Word","Excel","PDF","XML","Json"};
+                Object result=JOptionPane.showInputDialog(frame_main,"Save as type","Save As",JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+            }
+        });
+
         //----------------------------------------------------------------------Add All Items
         frame_main.add(jPanel1);
+        frame_main.add(jPanel4);
 
         menu_bar.add(jMenu_file);
         menu_bar.add(jMenu_edit);
 
         jMenu_file.add(jItem_open);
+        jMenu_file.add(jItem_saveAs);
         jMenu_file.add(jItem_save);
         jMenu_file.add(jItem_update);
         jMenu_file.add(jItem_delete);
@@ -231,10 +325,20 @@ public class Main {
         jMenu_file.add(jItem_json);
         jMenu_file.add(jItem_exit);
 
+        jItem_saveAs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] options={"Word","Excel","PDF","XML","Json"};
+                Object result=JOptionPane.showInputDialog(frame_main,"Save as type","Save As",JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+            }
+        });
+
         jPanel1.add(menu_bar);
         jPanel1.add(jPanel2);
         jPanel1.add(jPanel3);
 
+        jPanel2.add(lbl_id);
+        jPanel2.add(txt_id);
         jPanel2.add(lbl_name);
         jPanel2.add(txt_name);
         jPanel2.add(lbl_family);
@@ -253,19 +357,26 @@ public class Main {
         jPanel3.add(btn_excel);
         jPanel3.add(btn_json);
         jPanel3.add(btn_pdf);
+        jPanel3.add(btn_saveAs);
 
+        jPanel4.add(jsp_login);
 
         //----------------------------------------------------------------------- Set All setVisible
         frame_main.setVisible(true);
         jPanel1.setVisible(true);
         jPanel2.setVisible(true);
         jPanel3.setVisible(true);
+        jPanel4.setVisible(true);
+
+        jTable_login.setVisible(true);
+        jsp_login.setVisible(true);
 
         menu_bar.setVisible(true);
         jMenu_file.setVisible(true);
         jMenu_edit.setVisible(true);
 
         jItem_open.setVisible(true);
+        jItem_saveAs.setVisible(true);
         jItem_save.setVisible(true);
         jItem_update.setVisible(true);
         jItem_delete.setVisible(true);
@@ -279,6 +390,8 @@ public class Main {
         jItem_json.setVisible(true);
         jItem_exit.setVisible(true);
 
+        lbl_id.setVisible(true);
+        txt_id.setVisible(true);
         lbl_name.setVisible(true);
         txt_name.setVisible(true);
         lbl_family.setVisible(true);
@@ -297,6 +410,7 @@ public class Main {
         btn_excel.setVisible(true);
         btn_json.setVisible(true);
         btn_pdf.setVisible(true);
+        btn_saveAs.setVisible(true);
 
     }
 
