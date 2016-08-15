@@ -21,8 +21,11 @@ import java.net.URL;
  */
 public class Main {
 
+    int k=-1;      //Counter btn_save
+
     private static String[] columnNames={"ID","Name","Family","Address"};
-    private static Object[][] data={{123,"ali","abasi","tehran"}};
+    private static Object[][] data=new Object[100][4];
+
     private Dimension dimension;
     private JFrame frame_main;
     private JTable jTable_login;
@@ -92,7 +95,7 @@ public class Main {
 
         //----------------------------------------------------------------------- Implementation Body Frame
         frame_main=new JFrame("Login Form");
-        frame_main.setBounds(0,0,600,730);
+        frame_main.setBounds(0,0,615,730);
         frame_main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame_main.setLayout(null);
         Image login= ImageIO.read(new File("src/images/login.png"));
@@ -106,21 +109,75 @@ public class Main {
 
         jMenu_file=new JMenu("File");
         jMenu_edit=new JMenu("Edit");
-
+        /**
+        * <p>set the all JMenuItem this form to JPanel_4</p>
+        */
+        //--------------------------------------------------------------- Implementation JMenuItem Open
         jItem_open=new JMenuItem("Open");
+
+        URL url_open=this.getClass().getResource("/images/open.JPG");
+        ImageIcon icon_open=new ImageIcon(url_open);
+        jItem_open.setIcon(icon_open);
+        //--------------------------------------------------------------- Implementation JMenuItem Save As
         jItem_saveAs=new JMenuItem("Save As");
+        jItem_saveAs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] options={"Word","Excel","PDF","XML","Json"};
+                Object result=JOptionPane.showInputDialog(frame_main,"Save as type","Save As",JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+            }
+        });
+
+        //--------------------------------------------------------------- Implementation JMenuItem Save
         jItem_save=new JMenuItem("Save");
+
+        URL url_save=this.getClass().getResource("/images/save.JPG");
+        ImageIcon icon_save=new ImageIcon(url_save);
+        jItem_save.setIcon(icon_save);
+
+        //--------------------------------------------------------------- Implementation JMenuItem Update
         jItem_update=new JMenuItem("Update");
+
+        //--------------------------------------------------------------- Implementation JMenuItem Delete
         jItem_delete=new JMenuItem("Delete");
+
+        //--------------------------------------------------------------- Implementation JMenuItem Clear
         jItem_clear=new JMenuItem("Clear");
+
+        URL url_clear=this.getClass().getResource("/images/clear.JPG");
+        ImageIcon icon_clear=new ImageIcon(url_clear);
+        jItem_clear.setIcon(icon_clear);
+
+        //--------------------------------------------------------------- Implementation JMenuItem ChangView
         jItem_changView=new JMenuItem("ChangView");
+
+        //--------------------------------------------------------------- Implementation JMenuItem XML
         jItem_xml=new JMenuItem("XML");
+
+        //--------------------------------------------------------------- Implementation JMenuItem Report
         jItem_report=new JMenuItem("Report");
+
+        //--------------------------------------------------------------- Implementation JMenuItem PDF
         jItem_pdf=new JMenuItem("PDF");
+
+        //--------------------------------------------------------------- Implementation JMenuItem Word
         jItem_word=new JMenuItem("Word");
+
+        URL url_word=this.getClass().getResource("/images/word.JPG");
+        ImageIcon icon_word=new ImageIcon(url_word);
+        jItem_word.setIcon(icon_word);
+
+        //--------------------------------------------------------------- Implementation JMenuItem Excel
         jItem_excel=new JMenuItem("Excel");
+
+        URL url_excel=this.getClass().getResource("/images/excel.JPG");
+        ImageIcon icon_excel=new ImageIcon(url_excel);
+        jItem_excel.setIcon(icon_excel);
+
+        //--------------------------------------------------------------- Implementation JMenuItem JSon
         jItem_json=new JMenuItem("JSon");
 
+        //--------------------------------------------------------------- Implementation JMenuItem Exit
         jItem_exit=new JMenuItem("Exit");
         jItem_exit.addActionListener(new ActionListener() {
             @Override
@@ -129,26 +186,6 @@ public class Main {
             }
         });
 
-
-        URL url_open=this.getClass().getResource("/images/open.JPG");
-        ImageIcon icon_open=new ImageIcon(url_open);
-        jItem_open.setIcon(icon_open);
-
-        URL url_save=this.getClass().getResource("/images/save.JPG");
-        ImageIcon icon_save=new ImageIcon(url_save);
-        jItem_save.setIcon(icon_save);
-
-        URL url_clear=this.getClass().getResource("/images/clear.JPG");
-        ImageIcon icon_clear=new ImageIcon(url_clear);
-        jItem_clear.setIcon(icon_clear);
-
-        URL url_word=this.getClass().getResource("/images/word.JPG");
-        ImageIcon icon_word=new ImageIcon(url_word);
-        jItem_word.setIcon(icon_word);
-
-        URL url_excel=this.getClass().getResource("/images/excel.JPG");
-        ImageIcon icon_excel=new ImageIcon(url_excel);
-        jItem_excel.setIcon(icon_excel);
 
         /**
          * <p>Set The All JPanel For Frame</p>
@@ -191,7 +228,7 @@ public class Main {
                 tableColumn.setPreferredWidth(50);
             }
         }
-        //tableColumn.setResizable(false);
+        tableColumn.setResizable(false);
         jTable_login.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTable_login.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -251,6 +288,31 @@ public class Main {
         //--------------------------------------------------------------- Implementation Button Save
         btn_save=new JButton("Save");
         btn_save.setBounds(10,10,100,30);
+        btn_save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                k+=1;
+                long id=Long.parseLong(txt_id.getText().toString());
+                String name=txt_name.getText();
+                String family=txt_family.getText();
+                String address=txt_address.getText();
+
+                for(int i=0;i<data.length;i++){
+                    for(int j=0;j<columnNames.length;j++){
+                        switch (j){
+                            case 0:{data[k][j]=id;break;}
+                            case 1:{data[k][j]=name;break;}
+                            case 2:{data[k][j]=family;break;}
+                            case 3:{data[k][j]=address;break;}
+                        }
+
+                    }
+                }
+
+
+            }
+
+        });
 
         //--------------------------------------------------------------- Implementation Button Update
         btn_update=new JButton("Update");
@@ -263,6 +325,15 @@ public class Main {
         //--------------------------------------------------------------- Implementation Button Clear
         btn_clear=new JButton("Clear");
         btn_clear.setBounds(340,10,100,30);
+        btn_clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txt_id.setText("");
+                txt_name.setText("");
+                txt_family.setText("");
+                txt_address.setText("");
+            }
+        });
 
         //--------------------------------------------------------------- Implementation Button ChangView
         btn_changView=new JButton("ChangView");
@@ -324,14 +395,6 @@ public class Main {
         jMenu_file.add(jItem_excel);
         jMenu_file.add(jItem_json);
         jMenu_file.add(jItem_exit);
-
-        jItem_saveAs.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Object[] options={"Word","Excel","PDF","XML","Json"};
-                Object result=JOptionPane.showInputDialog(frame_main,"Save as type","Save As",JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
-            }
-        });
 
         jPanel1.add(menu_bar);
         jPanel1.add(jPanel2);
@@ -411,7 +474,6 @@ public class Main {
         btn_json.setVisible(true);
         btn_pdf.setVisible(true);
         btn_saveAs.setVisible(true);
-
     }
 
     /**
@@ -421,6 +483,5 @@ public class Main {
         Main m1=new Main();
         m1.initView();
     }
-
 
 }
